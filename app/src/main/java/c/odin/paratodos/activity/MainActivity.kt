@@ -11,7 +11,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MainActivityUi().setContentView(this)
@@ -35,38 +35,3 @@ class MainActivity : AppCompatActivity() {
     private fun checkCredentials(name: String, password: String) = name == "user" && password == "password"
 }
 
-class MainActivityUi : AnkoComponent<MainActivity> {
-    private val customStyle = { v: Any ->
-        when (v) {
-            is Button -> v.textSize = 26f
-            is EditText -> v.textSize = 24f
-        }
-    }
-
-    override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
-        verticalLayout {
-            padding = dip(32)
-
-            imageView(android.R.drawable.ic_menu_manage).lparams {
-                margin = dip(16)
-                gravity = Gravity.CENTER
-            }
-
-            val name = editText {
-//                hintResource = R.string.name
-            }
-            val password = editText {
-//                hintResource = R.string.password
-                inputType = TYPE_CLASS_TEXT or TYPE_TEXT_VARIATION_PASSWORD
-            }
-
-            button("Log in") {
-                onClick {
-                    ui.owner.tryLogin(ui, name.text, password.text)
-                }
-            }
-
-//            myRichView()
-        }.applyRecursively(customStyle)
-    }
-}
