@@ -1,3 +1,3 @@
-package c.odin.paratodos.models
+package c.odin.paratodos.model
 
 

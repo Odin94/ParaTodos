@@ -1,37 +1,50 @@
-package c.odin.paratodos.activities
+package c.odin.paratodos.activity
 
 import android.os.Bundle
-import android.text.InputType.TYPE_CLASS_TEXT
-import android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-import android.view.Gravity
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.coroutines.onClick
+import c.odin.paratodos.activity.ui.MainUI
+import c.odin.paratodos.adapter.TodoAdapter
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.setContentView
 
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
+
+    val todoList = ArrayList<String>()
+    val BUNDLE_TODO_LIST = "TodoList"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainActivityUi().setContentView(this)
-    }
 
-    fun tryLogin(ui: AnkoContext<MainActivity>, name: CharSequence?, password: CharSequence?) {
-        ui.doAsync {
-            Thread.sleep(500)
-
-            activityUiThreadWithContext {
-                if (checkCredentials(name.toString(), password.toString())) {
-                    toast("Logged in! :)")
-//                    startActivity<CountriesActivity>()
-                } else {
-                    toast("Wrong password :( Enter user:password")
-                }
-            }
+        savedInstanceState?.let {
+            val arrayList = savedInstanceState.get(BUNDLE_TODO_LIST)
+            todoList.addAll(arrayList as List<String>)
         }
+
+        MainUI(TodoAdapter(todoList)).setContentView(this)
     }
 
-    private fun checkCredentials(name: String, password: String) = name == "user" && password == "password"
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putStringArrayList(BUNDLE_TODO_LIST, todoList)
+        super.onSaveInstanceState(outState)
+    }
+
+//    fun tryLogin(ui: AnkoContext<MainActivity>, name: CharSequence?, password: CharSequence?) {
+//        ui.doAsync {
+//            Thread.sleep(500)
+//
+//            activityUiThreadWithContext {
+//                if (checkCredentials(name.toString(), password.toString())) {
+//                    toast("Logged in! :)")
+////                    startActivity<CountriesActivity>()
+//                } else {
+//                    toast("Wrong password :( Enter user:password")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun checkCredentials(name: String, password: String) =
+//        name == "user" && password == "password"
 }
 

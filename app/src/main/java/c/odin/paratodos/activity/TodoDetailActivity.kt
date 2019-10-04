@@ -1,3 +1,3 @@
-package c.odin.paratodos.activities
+package c.odin.paratodos.activity
 
 
