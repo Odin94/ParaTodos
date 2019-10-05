@@ -1,7 +1,6 @@
 package c.odin.paratodos.activity.ui
 
 import android.view.Gravity
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
@@ -34,6 +33,17 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                 toolbar {
                     lparams(width = matchParent, height = wrapContent)
 
+                    imageButton {
+                        val hamburgerIcon = ctx.getDrawable(R.drawable.ic_menu_24px)!!
+                        hamburgerIcon.setTint(ctx.getColor(android.R.color.white))
+                        setImageDrawable(hamburgerIcon)
+
+                        setBackgroundColor(android.R.drawable.screen_background_light_transparent)
+                        onClick {
+
+                        }
+                    }
+
                     menu.apply {
                         add("Action1").apply {
                             tooltipText = "Start Action 1"
@@ -48,19 +58,16 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                             }
                         }
 
-                        add("Action2")
-                            // If you don't like the extra apply,
-                            // you can also use chain most of the setters
-                            .setTooltipText("Start Action 2")
-//                            .setIcon(R.drawable.ic_action_bar)
-                            .setOnMenuItemClickListener {
-                                //                                startActivity<Activity2>()
+                        add("Action 2").apply {
+                            tooltipText = "Start Action 2"
+
+                            setOnMenuItemClickListener {
+                                // startActivity<Activity2>()
                                 true
                             }
-                            // Not all types of menu Icons do actually show the icon,
-                            // so make it an Action for demo purposes
-                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS) // <-- this is actually one of the setters, that cant be chained
+                        }
                     }
+                    menu
                 }
             }
             verticalLayout {
@@ -80,7 +87,7 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                             verticalLayout {
                                 //Dialog Title
                                 toolbar {
-//                                    id = R.id.dialog_toolbar
+                                    //                                    id = R.id.dialog_toolbar
                                     lparams(width = matchParent, height = wrapContent)
                                     backgroundColor =
                                         ContextCompat.getColor(ctx, R.color.colorAccent)
