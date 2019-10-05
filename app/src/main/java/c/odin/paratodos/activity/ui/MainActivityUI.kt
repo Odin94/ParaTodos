@@ -3,15 +3,19 @@ package c.odin.paratodos.activity.ui
 import android.content.Context
 import android.view.Gravity
 import android.view.Menu
+import android.view.View
 import android.view.ViewManager
 import android.widget.*
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import c.odin.paratodos.R
 import c.odin.paratodos.activity.MainActivity
 import c.odin.paratodos.adapter.TodoAdapter
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
+import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
@@ -26,11 +30,11 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
 
 
     override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
-        relativeLayout {
-            var todoList: ListView? = null
-
+        coordinatorLayout {
+            lparams(width = matchParent, height = matchParent)
             appBarLayout {
                 lparams(width = matchParent, height = wrapContent)
+
 
                 toolbar {
                     lparams(width = matchParent, height = wrapContent)
@@ -41,6 +45,19 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                     menu
                 }
             }
+
+
+//            coordinatorLayout() {
+//                lparams(width = matchParent, height = wrapContent)
+            var todoList: ListView? = null
+
+            val hintListView = textView("What's your Todo List for today?") {
+                textSize = 20f
+            }.lparams {
+                gravity = Gravity.CENTER
+            }
+
+
             verticalLayout {
                 todoList = listView {
                     //assign adapter
@@ -48,20 +65,21 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                 }
             }.lparams {
                 margin = dip(5)
+                behavior = AppBarLayout.ScrollingViewBehavior()
             }
 
-            addFloatingPlusButton(this, ctx, todoList)
+            addFloatingPlusButton(this, ctx, todoList, hintListView)
                 .lparams {
                     //setting button to bottom right of the screen
-                    margin = dip(10)
-                    alignParentBottom()
-                    alignParentEnd()
-                    alignParentRight()
+//                        margin = dip(10)
+                    horizontalMargin = dip(25)
+                    verticalMargin = dip(25)
                     gravity = Gravity.BOTTOM or Gravity.END
                 }
 
         }.applyRecursively(customStyle)
     }
+//    }
 
     private fun populateMenu(menu: Menu, ctx: Context) {
         menu.apply {
@@ -101,11 +119,12 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
     }
 
     private fun addFloatingPlusButton(
-        rl: RelativeLayout,
+        layout: CoordinatorLayout,
         ctx: Context,
-        todoList: ListView?
+        todoList: ListView?,
+        hintListView: TextView
     ): FloatingActionButton {
-        return rl.floatingActionButton {
+        return layout.floatingActionButton {
             imageResource = android.R.drawable.ic_input_add
             onClick {
                 val adapter = todoList?.adapter as TodoAdapter
@@ -135,7 +154,7 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                                     ctx.toast("Oops!! Your task says nothing!")
                                 } else {
                                     adapter.add(task.text.toString())
-//                                        showHideHintListView(todoList!!)
+                                    showHideHintListView(todoList!!, hintListView)
                                 }
                             }
                         }
@@ -144,4 +163,14 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
             }
         }
     }
+
+    private fun showHideHintListView(listView: ListView, hintListView: TextView) {
+        if (getTotalListItems(listView) > 0) {
+            hintListView.visibility = View.GONE
+        } else {
+            hintListView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getTotalListItems(list: ListView?) = list?.adapter?.count ?: 0
 }

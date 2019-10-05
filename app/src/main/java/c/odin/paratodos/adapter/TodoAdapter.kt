@@ -9,11 +9,11 @@ import android.widget.LinearLayout.HORIZONTAL
 import org.jetbrains.anko.*
 
 
-class TodoAdapter(val todoList: ArrayList<String> = ArrayList<String>()) : BaseAdapter() {
+class TodoAdapter(private val todoList: ArrayList<String> = ArrayList<String>()) : BaseAdapter() {
     override fun getView(i: Int, v: View?, parent: ViewGroup?): View {
         return with(parent!!.context) {
             //taskNum will serve as the S.No. of the todoList starting from 1
-            var taskNum: Int = i + 1
+            val taskNum: Int = i + 1
 
             //Layout for a todoList view item
             linearLayout {
