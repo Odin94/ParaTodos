@@ -8,10 +8,11 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.setContentView
 
 
+const val BUNDLE_TODO_LIST = "TodoList"
+
 class MainActivity : AppCompatActivity(), AnkoLogger {
 
-    val todoList = ArrayList<String>()
-    val BUNDLE_TODO_LIST = "TodoList"
+    private val todoList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,23 +29,5 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         outState.putStringArrayList(BUNDLE_TODO_LIST, todoList)
         super.onSaveInstanceState(outState)
     }
-
-//    fun tryLogin(ui: AnkoContext<MainActivity>, name: CharSequence?, password: CharSequence?) {
-//        ui.doAsync {
-//            Thread.sleep(500)
-//
-//            activityUiThreadWithContext {
-//                if (checkCredentials(name.toString(), password.toString())) {
-//                    toast("Logged in! :)")
-////                    startActivity<CountriesActivity>()
-//                } else {
-//                    toast("Wrong password :( Enter user:password")
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun checkCredentials(name: String, password: String) =
-//        name == "user" && password == "password"
 }
 

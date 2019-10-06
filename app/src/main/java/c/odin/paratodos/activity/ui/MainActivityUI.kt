@@ -46,9 +46,6 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                 }
             }
 
-
-//            coordinatorLayout() {
-//                lparams(width = matchParent, height = wrapContent)
             var todoList: ListView? = null
 
             val hintListView = textView("What's your Todo List for today?") {
@@ -70,8 +67,7 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
 
             addFloatingPlusButton(this, ctx, todoList, hintListView)
                 .lparams {
-                    //setting button to bottom right of the screen
-//                        margin = dip(10)
+
                     horizontalMargin = dip(25)
                     verticalMargin = dip(25)
                     gravity = Gravity.BOTTOM or Gravity.END
@@ -79,16 +75,12 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
 
         }.applyRecursively(customStyle)
     }
-//    }
 
     private fun populateMenu(menu: Menu, ctx: Context) {
         menu.apply {
             add("Action1").apply {
                 tooltipText = "Start Action 1"
 
-                // Unfortunately you cant't use `icon = R.drawable.ic_action_foo` here,
-                // because it would expect a Drawable instead of a Resource ID
-//                            setIcon(R.drawable.ic_action_foo)
 
                 setOnMenuItemClickListener {
                     //                                startActivity<Activity1>()
