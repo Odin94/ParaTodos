@@ -35,7 +35,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
             insert(
                 TODO_TABLE_NAME,
                 "date_created" to LocalDateTime.now(ZoneOffset.UTC).toString(),
-                "title" to todo.description,
+                "title" to todo.title,
                 "description" to todo.description,
                 "priority" to "",
                 "date_reminder" to "",
@@ -63,7 +63,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
         // Here you create tables
         db.createTable(
             TODO_TABLE_NAME, true,
-            "id" to INTEGER + PRIMARY_KEY + UNIQUE + AUTOINCREMENT,
+            "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
             "date_created" to TEXT,
             "title" to TEXT,
             "description" to TEXT,

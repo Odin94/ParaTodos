@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import c.odin.paratodos.R
 import c.odin.paratodos.activity.MainActivity
 import c.odin.paratodos.adapter.TodoAdapter
+import c.odin.paratodos.model.Todo
+import c.odin.paratodos.persistence.database
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.jetbrains.anko.*
@@ -146,6 +148,17 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                                     ctx.toast("Oops!! Your task says nothing!")
                                 } else {
                                     adapter.add(task.text.toString())
+                                    ctx.database.storeTodo(
+                                        Todo(
+                                            -1,
+                                            "",
+                                            task.text.toString(),
+                                            "",
+                                            "",
+                                            "",
+                                            ""
+                                        )
+                                    )
                                     showHideHintListView(todoList!!, hintListView)
                                 }
                             }
