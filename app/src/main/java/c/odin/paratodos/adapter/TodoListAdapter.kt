@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout.HORIZONTAL
+import c.odin.paratodos.model.Todo
 import org.jetbrains.anko.*
 
 
-class TodoListAdapter(private val todoList: MutableList<String> = ArrayList<String>()) : BaseAdapter() {
+class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>()) : BaseAdapter() {
     override fun getView(i: Int, v: View?, parent: ViewGroup?): View {
         return with(parent!!.context) {
             //taskNum will serve as the S.No. of the todoList starting from 1
@@ -32,7 +33,7 @@ class TodoListAdapter(private val todoList: MutableList<String> = ArrayList<Stri
 
                 textView {
                     //                    id = R.id.taskName
-                    text = todoList[i]
+                    text = todoList[i].title
                     textSize = 16f
                     typeface = DEFAULT_BOLD
                     padding = dip(5)
@@ -41,7 +42,7 @@ class TodoListAdapter(private val todoList: MutableList<String> = ArrayList<Stri
         }
     }
 
-    override fun getItem(position: Int): String {
+    override fun getItem(position: Int): Todo {
         return todoList[position]
     }
 
@@ -55,8 +56,8 @@ class TodoListAdapter(private val todoList: MutableList<String> = ArrayList<Stri
     }
 
     //function to add an item to the todoList
-    fun add(text: String) {
-        todoList.add(todoList.size, text)
+    fun add(todo: Todo) {
+        todoList.add(todoList.size, todo)
         notifyDataSetChanged()
     }
 

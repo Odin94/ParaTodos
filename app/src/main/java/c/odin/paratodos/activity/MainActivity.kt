@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import c.odin.paratodos.activity.ui.MainUI
 import c.odin.paratodos.adapter.TodoListAdapter
+import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
@@ -14,21 +15,20 @@ private const val BUNDLE_TODO_LIST = "TodoList"
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
 
-    private val todoList = ArrayList<String>()
+    private val todoList = ArrayList<Todo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         savedInstanceState?.let {
             val arrayList = savedInstanceState.get(BUNDLE_TODO_LIST)
-            todoList.addAll(arrayList as List<String>)
+            todoList.addAll(arrayList as List<Todo>)
         }
 
         val todoAdapter = TodoListAdapter(todoList)
 
-        val ctx = this
         doAsync {
-            val titles = database.getTodos().map { it.title }.toMutableList()
+            val titles = database.getTodos()
             titles.forEach { todoAdapter.add(it) }
             todoAdapter.notifyDataSetChanged()
         }
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putStringArrayList(BUNDLE_TODO_LIST, todoList)
+        outState.putParcelableArrayList(BUNDLE_TODO_LIST, todoList)
         super.onSaveInstanceState(outState)
     }
 }

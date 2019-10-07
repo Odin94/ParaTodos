@@ -22,7 +22,7 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
-class MainUI(val todoAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
+class MainUI(val todoListAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
     private val customStyle = { v: Any ->
         when (v) {
             is Button -> v.textSize = 26f
@@ -60,7 +60,7 @@ class MainUI(val todoAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
             verticalLayout {
                 todoList = listView {
                     //assign adapter
-                    adapter = todoAdapter
+                    adapter = todoListAdapter
                 }
             }.lparams {
                 margin = dip(5)
@@ -149,19 +149,18 @@ class MainUI(val todoAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
                                 if (task.text.toString().isEmpty()) {
                                     ctx.toast("Oops!! Your task says nothing!")
                                 } else {
-                                    adapter.add(task.text.toString())
-                                    ctx.database.storeTodo(
-                                        Todo(
-                                            -1,
-                                            "",
-                                            task.text.toString(),
-                                            "",
-                                            "",
-                                            "",
-                                            ""
-                                        )
+                                    val newTodo = Todo(
+                                        -1,
+                                        "",
+                                        task.text.toString(),
+                                        "",
+                                        "",
+                                        "",
+                                        ""
                                     )
-                                    showHideHintListView(todoList!!, hintListView)
+                                    adapter.add(newTodo)
+                                    ctx.database.storeTodo(newTodo)
+                                    showHideHintListView(todoList, hintListView)
                                 }
                             }
                         }
