@@ -3,14 +3,14 @@ package c.odin.paratodos.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import c.odin.paratodos.activity.ui.MainUI
-import c.odin.paratodos.adapter.TodoAdapter
+import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.persistence.database
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.setContentView
 
 
-const val BUNDLE_TODO_LIST = "TodoList"
+private const val BUNDLE_TODO_LIST = "TodoList"
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
 
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
             todoList.addAll(arrayList as List<String>)
         }
 
-        val todoAdapter = TodoAdapter(todoList)
+        val todoAdapter = TodoListAdapter(todoList)
 
         val ctx = this
         doAsync {
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
             todoAdapter.notifyDataSetChanged()
         }
 
-        MainUI(TodoAdapter(todoList)).setContentView(this)
+        MainUI(TodoListAdapter(todoList)).setContentView(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

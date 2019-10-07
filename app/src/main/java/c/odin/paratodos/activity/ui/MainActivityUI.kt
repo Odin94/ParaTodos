@@ -10,7 +10,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import c.odin.paratodos.R
 import c.odin.paratodos.activity.MainActivity
-import c.odin.paratodos.adapter.TodoAdapter
+import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
 import com.google.android.material.appbar.AppBarLayout
@@ -22,7 +22,7 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
-class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
+class MainUI(val todoAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
     private val customStyle = { v: Any ->
         when (v) {
             is Button -> v.textSize = 26f
@@ -75,7 +75,9 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
                     gravity = Gravity.BOTTOM or Gravity.END
                 }
 
+            showHideHintListView(todoList, hintListView)
         }.applyRecursively(customStyle)
+
     }
 
     private fun populateMenu(menu: Menu, ctx: Context) {
@@ -121,7 +123,7 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
         return layout.floatingActionButton {
             imageResource = android.R.drawable.ic_input_add
             onClick {
-                val adapter = todoList?.adapter as TodoAdapter
+                val adapter = todoList?.adapter as TodoListAdapter
                 ctx.alert {
                     customView {
                         verticalLayout {
@@ -169,8 +171,8 @@ class MainUI(val todoAdapter: TodoAdapter) : AnkoComponent<MainActivity> {
         }
     }
 
-    private fun showHideHintListView(listView: ListView, hintListView: TextView) {
-        if (getTotalListItems(listView) > 0) {
+    private fun showHideHintListView(listView: ListView?, hintListView: TextView) {
+        if (listView == null || getTotalListItems(listView) > 0) {
             hintListView.visibility = View.GONE
         } else {
             hintListView.visibility = View.VISIBLE
