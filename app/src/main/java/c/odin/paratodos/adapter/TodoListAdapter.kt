@@ -22,6 +22,10 @@ class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>(
                 lparams(width = matchParent, height = wrapContent)
                 padding = dip(10)
                 orientation = HORIZONTAL
+                isClickable = true
+                setOnClickListener {
+                    toast(todoList[i].title)
+                }
 
                 textView {
                     //                    id = R.id.taskNum
