@@ -30,6 +30,16 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
         }
     }
 
+    fun getTodo(id: String): Todo {
+        return use {
+            select(TODO_TABLE_NAME)
+                .whereSimple("id = ?", id)
+                .parseSingle(classParser<Todo>())
+        }
+    }
+
+    fun getTodo(id: Int) = getTodo(id.toString())
+
     fun storeTodo(todo: Todo) {
         use {
             insert(
