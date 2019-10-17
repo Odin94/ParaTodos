@@ -2,6 +2,7 @@ package c.odin.paratodos.activity.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.ViewManager
@@ -11,6 +12,7 @@ import android.widget.ImageButton
 import c.odin.paratodos.R
 import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.model.Todo
+import com.google.android.material.appbar.AppBarLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
@@ -46,9 +48,22 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
 
             verticalLayout {
                 textView {
-                    text = "Descritpion: " + todo.description
+                    text = todo.title
+                    textSize
                     textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                }.lparams {
+                    gravity = Gravity.CENTER
                 }
+                textView {
+                    text = "Descritpion: " + todo.description
+                    textSize
+                    textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                }.lparams {
+                    gravity = Gravity.CENTER
+                }
+            }.lparams {
+                margin = dip(5)
+                behavior = AppBarLayout.ScrollingViewBehavior()
             }
 
         }.applyRecursively(customStyle)
@@ -85,7 +100,7 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
             setImageDrawable(hamburgerIcon)
 
             setBackgroundColor(android.R.drawable.screen_background_light_transparent)
-            onClick { ctx.toast("Hello") }
+            onClick { ctx.toast("Hello2") }
         }
     }
 }
