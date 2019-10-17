@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout.HORIZONTAL
+import c.odin.paratodos.activity.EXTRA_TODO
+import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.model.Todo
 import org.jetbrains.anko.*
 
@@ -25,6 +27,7 @@ class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>(
                 isClickable = true
                 setOnClickListener {
                     toast(todoList[i].title)
+                    startActivity<TodoDetailActivity>(EXTRA_TODO to todoList[i])
                 }
 
                 textView {
