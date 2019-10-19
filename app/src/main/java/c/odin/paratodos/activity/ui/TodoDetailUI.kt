@@ -7,9 +7,8 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewManager
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
-import c.odin.paratodos.R
+import android.widget.LinearLayout
 import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.model.Todo
 import com.google.android.material.appbar.AppBarLayout
@@ -23,7 +22,6 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
     private val customStyle = { v: Any ->
         when (v) {
             is Button -> v.textSize = 26f
-            is EditText -> v.textSize = 24f
         }
     }
 
@@ -31,43 +29,52 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
     @SuppressLint("SetTextI18n")
     override fun createView(ui: AnkoContext<TodoDetailActivity>) = with(ui) {
         coordinatorLayout {
-            lparams(width = matchParent, height = matchParent)
+
             appBarLayout {
-                lparams(width = matchParent, height = wrapContent)
-
-
                 toolbar {
-                    lparams(width = matchParent, height = wrapContent)
-
                     addHamburgerButton(this, ctx)
                     populateMenu(menu)
 
                     menu
-                }
-            }
+                }.lparams(width = matchParent, height = wrapContent)
+            }.lparams(width = matchParent, height = wrapContent)
 
             verticalLayout {
-                textView {
-                    text = todo.title
-                    textSize
-                    textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                }.lparams {
-                    gravity = Gravity.CENTER
+                verticalLayout {
+                    textView {
+                        text = todo.title
+                        textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                        textSize = 24f
+                    }.lparams {
+                        gravity = Gravity.START
+                    }
+
+                    view {
+                        background = ctx.getDrawable(android.R.color.darker_gray)
+                    }.lparams(width = matchParent, height = dip(1)) {
+                        topMargin = dip(15)
+                        bottomMargin = dip(15)
+                    }
+
+                    textView {
+                        hint = "Description"
+                        text = todo.description
+                        textSize = 18f
+                        textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    }.lparams(width = matchParent, height = matchParent) {
+                        gravity = Gravity.CENTER
+                    }
+
+                    showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
+
+                }.lparams(width = matchParent, height = matchParent) {
+                    margin = dip(5)
+                    padding = dip(20)
                 }
-                textView {
-                    text = "Descritpion: " + todo.description
-                    textSize
-                    textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                }.lparams {
-                    gravity = Gravity.CENTER
-                }
-            }.lparams {
-                margin = dip(5)
+            }.lparams(width = matchParent, height = matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }
-
         }.applyRecursively(customStyle)
-
     }
 
     private fun populateMenu(menu: Menu) {
@@ -95,7 +102,7 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
 
     private fun addHamburgerButton(vm: ViewManager, ctx: Context): ImageButton {
         return vm.imageButton {
-            val hamburgerIcon = ctx.getDrawable(R.drawable.ic_menu_24px)!!
+            val hamburgerIcon = ctx.getDrawable(c.odin.paratodos.R.drawable.ic_menu_24px)!!
             hamburgerIcon.setTint(ctx.getColor(android.R.color.white))
             setImageDrawable(hamburgerIcon)
 
@@ -103,4 +110,7 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
             onClick { ctx.toast("Hello2") }
         }
     }
+
+//    private fun horizontalDivider(vm: LinearLayout): View {
+//    }
 }
