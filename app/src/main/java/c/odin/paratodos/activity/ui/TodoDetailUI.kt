@@ -110,7 +110,4 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
             onClick { ctx.toast("Hello2") }
         }
     }
-
-//    private fun horizontalDivider(vm: LinearLayout): View {
-//    }
 }
