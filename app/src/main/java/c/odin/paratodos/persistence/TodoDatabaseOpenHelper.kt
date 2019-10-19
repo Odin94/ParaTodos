@@ -65,7 +65,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
                 "date_reminder" to todo.date_reminder,
                 "date_due" to todo.date_due
             )
-                .whereSimple("id = ?", todo.id.toString())
+                .whereSimple("id = ?", todo.id.toString()).exec()
         }
     }
 

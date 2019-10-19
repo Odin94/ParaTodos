@@ -9,8 +9,10 @@ import android.view.ViewManager
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.core.widget.doOnTextChanged
 import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.model.Todo
+import c.odin.paratodos.persistence.database
 import com.google.android.material.appbar.AppBarLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
@@ -46,6 +48,11 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
                         textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                         textSize = 24f
                         background = ctx.getDrawable(android.R.color.transparent)
+
+                        doOnTextChanged { text, _, _, _ ->
+                            todo.title = text.toString()
+                            ctx.database.updateTodo(todo)
+                        }
                     }.lparams {
                         gravity = Gravity.START
                     }
@@ -63,6 +70,11 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
                         textSize = 18f
                         textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                         background = ctx.getDrawable(android.R.color.transparent)
+
+                        doOnTextChanged { text, _, _, _ ->
+                            todo.description = text.toString()
+                            ctx.database.updateTodo(todo)
+                        }
                     }.lparams(width = matchParent, height = wrapContent) {
                         gravity = Gravity.START
                     }

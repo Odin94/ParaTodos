@@ -1,5 +1,6 @@
 package c.odin.paratodos.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import c.odin.paratodos.activity.ui.MainUI
@@ -15,7 +16,10 @@ private const val BUNDLE_TODO_LIST = "TodoList"
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
 
-    private val todoList = ArrayList<Todo>()
+    private var todoList: MutableList<Todo> = ArrayList<Todo>()
+    private lateinit var todoAdapter: TodoListAdapter
+
+    private val DETAIL_CODE = 42
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,19 +29,33 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
             todoList.addAll(arrayList as List<Todo>)
         }
 
-        val todoAdapter = TodoListAdapter(todoList)
-
         doAsync {
             val titles = database.getTodos()
             titles.forEach { todoAdapter.add(it) }
             todoAdapter.notifyDataSetChanged()
         }
 
-        MainUI(TodoListAdapter(todoList)).setContentView(this)
+        todoAdapter = TodoListAdapter(todoList, this, DETAIL_CODE)
+
+        MainUI(todoAdapter).setContentView(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            DETAIL_CODE -> {
+                if (data != null) {
+                    val updatedTodo = data.getParcelableExtra<Todo>(EXTRA_TODO)
+                    todoAdapter.update(updatedTodo)
+
+                    database.updateTodo(updatedTodo)
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(BUNDLE_TODO_LIST, todoList)
+        outState.putParcelableArrayList(BUNDLE_TODO_LIST, ArrayList(todoList))
         super.onSaveInstanceState(outState)
     }
 }

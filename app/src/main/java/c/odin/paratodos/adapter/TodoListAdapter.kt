@@ -1,5 +1,6 @@
 package c.odin.paratodos.adapter
 
+import android.app.Activity
 import android.graphics.Typeface
 import android.graphics.Typeface.DEFAULT_BOLD
 import android.view.View
@@ -12,7 +13,11 @@ import c.odin.paratodos.model.Todo
 import org.jetbrains.anko.*
 
 
-class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>()) : BaseAdapter() {
+class TodoListAdapter(
+    private val todoList: MutableList<Todo> = ArrayList<Todo>(),
+    private val activity: Activity,
+    private val detailRequestCode: Int
+) : BaseAdapter() {
     override fun getView(i: Int, v: View?, parent: ViewGroup?): View {
         return with(parent!!.context) {
             //taskNum will serve as the S.No. of the todoList starting from 1
@@ -27,7 +32,10 @@ class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>(
                 isClickable = true
                 setOnClickListener {
                     toast(todoList[i].title)
-                    startActivity<TodoDetailActivity>(EXTRA_TODO to todoList[i])
+                    activity.startActivityForResult<TodoDetailActivity>(
+                        detailRequestCode,
+                        EXTRA_TODO to todoList[i]
+                    )
                 }
 
                 textView {
@@ -74,4 +82,8 @@ class TodoListAdapter(private val todoList: MutableList<Todo> = ArrayList<Todo>(
         notifyDataSetChanged()
     }
 
+    fun update(todo: Todo) {
+        todoList.replaceAll { if (it.id == todo.id) todo else it }
+        notifyDataSetChanged()
+    }
 }
