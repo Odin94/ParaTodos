@@ -44,9 +44,11 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
             verticalLayout {
                 verticalLayout {
                     editText {
+                        // TITLE
                         setText(todo.title)
                         textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                         textSize = 24f
+                        minWidth = dip(400)
                         background = ctx.getDrawable(android.R.color.transparent)
 
                         doOnTextChanged { text, _, _, _ ->
@@ -65,6 +67,7 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
                     }
 
                     editText {
+                        // DESCRIPTION
                         hint = "Description"
                         setText(todo.description)
                         textSize = 18f
