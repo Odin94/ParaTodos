@@ -41,10 +41,11 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
 
             verticalLayout {
                 verticalLayout {
-                    textView {
-                        text = todo.title
+                    editText {
+                        setText(todo.title)
                         textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                         textSize = 24f
+                        background = ctx.getDrawable(android.R.color.transparent)
                     }.lparams {
                         gravity = Gravity.START
                     }
@@ -56,13 +57,14 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
                         bottomMargin = dip(15)
                     }
 
-                    textView {
+                    editText {
                         hint = "Description"
-                        text = todo.description
+                        setText(todo.description)
                         textSize = 18f
                         textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    }.lparams(width = matchParent, height = matchParent) {
-                        gravity = Gravity.CENTER
+                        background = ctx.getDrawable(android.R.color.transparent)
+                    }.lparams(width = matchParent, height = wrapContent) {
+                        gravity = Gravity.START
                     }
 
                     showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
