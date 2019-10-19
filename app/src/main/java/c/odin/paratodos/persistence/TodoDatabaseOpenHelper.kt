@@ -59,13 +59,14 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
             update(
                 TODO_TABLE_NAME,
                 "date_created" to todo.date_created,
-                "title" to todo.description,
+                "title" to todo.title,
                 "description" to todo.description,
                 "priority" to todo.priority,
                 "date_reminder" to todo.date_reminder,
                 "date_due" to todo.date_due
             )
-                .whereSimple("id = ?", todo.id.toString()).exec()
+                .whereArgs("id = {todoId}", "todoId" to todo.id)
+                .exec()
         }
     }
 
