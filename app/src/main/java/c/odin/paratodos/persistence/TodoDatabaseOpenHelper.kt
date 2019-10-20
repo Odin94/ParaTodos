@@ -2,6 +2,7 @@ package c.odin.paratodos.persistence
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import c.odin.paratodos.activity.extensions.int
 import c.odin.paratodos.model.Todo
 import org.jetbrains.anko.db.*
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
     ManagedSQLiteOpenHelper(ctx, "Todos", null, 1) {
     init {
         instance = this
+        onCreate(this.writableDatabase)
     }
 
     companion object {
@@ -49,7 +51,8 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
                 "description" to todo.description,
                 "priority" to "",
                 "date_reminder" to "",
-                "date_due" to ""
+                "date_due" to "",
+                "completed" to todo.completed.int
             )
         }
     }
@@ -63,7 +66,8 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
                 "description" to todo.description,
                 "priority" to todo.priority,
                 "date_reminder" to todo.date_reminder,
-                "date_due" to todo.date_due
+                "date_due" to todo.date_due,
+                "completed" to todo.completed.int
             )
                 .whereArgs("id = {todoId}", "todoId" to todo.id)
                 .exec()
@@ -80,7 +84,8 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
             "description" to TEXT,
             "priority" to TEXT,
             "date_reminder" to TEXT,
-            "date_due" to TEXT
+            "date_due" to TEXT,
+            "completed" to INTEGER + DEFAULT("0")
         )
     }
 

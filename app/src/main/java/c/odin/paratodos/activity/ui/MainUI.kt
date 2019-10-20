@@ -179,13 +179,8 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                                     ctx.toast("Oops!! Your task says nothing!")
                                 } else {
                                     val newTodo = Todo(
-                                        -1,
-                                        "",
-                                        task.text.toString(),
-                                        "",
-                                        "",
-                                        "",
-                                        dateDue
+                                        title = task.text.toString(),
+                                        date_due = dateDue
                                     )
                                     adapter.add(newTodo)
                                     ctx.database.storeTodo(newTodo)
