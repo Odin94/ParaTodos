@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
         todoAdapter = TodoListAdapter(todoList, this, DETAIL_CODE)
 
-        MainUI(todoAdapter).setContentView(this)
+        MainUI(todoAdapter, this).setContentView(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

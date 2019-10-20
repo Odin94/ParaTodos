@@ -1,6 +1,7 @@
 package c.odin.paratodos.activity.ui
 
 import android.content.Context
+import android.icu.util.Calendar
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -10,6 +11,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import c.odin.paratodos.R
 import c.odin.paratodos.activity.MainActivity
+import c.odin.paratodos.activity.extensions.getDateString
+import c.odin.paratodos.activity.extensions.openDatePicker
+import c.odin.paratodos.activity.extensions.setDate
 import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
@@ -22,7 +26,8 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
-class MainUI(val todoListAdapter: TodoListAdapter) : AnkoComponent<MainActivity> {
+class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
+    AnkoComponent<MainActivity> {
     private val customStyle = { v: Any ->
         when (v) {
             is Button -> v.textSize = 26f
@@ -145,6 +150,30 @@ class MainUI(val todoListAdapter: TodoListAdapter) : AnkoComponent<MainActivity>
                                 hint = "To do task "
                                 padding = dip(20)
                             }
+                            var dateDue = ""
+
+                            linearLayout {
+                                imageButton {
+                                    val calendarIcon =
+                                        ctx.getDrawable(R.drawable.ic_calendar_today_24px)!!
+                                    calendarIcon.setTint(ctx.getColor(android.R.color.darker_gray))
+                                    setImageDrawable(calendarIcon)
+
+                                    setBackgroundColor(android.R.drawable.screen_background_light_transparent)
+                                    onClick {
+                                        val c = Calendar.getInstance()
+                                        c.openDatePicker(activity) { view, year, monthOfYear, dayOfMonth ->
+                                            c.setDate(year, monthOfYear, dayOfMonth)
+                                            dateDue = c.getDateString()
+
+                                            calendarIcon.setTint(ctx.getColor(android.R.color.holo_red_dark))
+                                        }
+                                    }
+                                }
+                            }.lparams(width = matchParent, height = wrapContent) {
+                                padding = dip(20)
+                            }
+
                             positiveButton("Add") {
                                 if (task.text.toString().isEmpty()) {
                                     ctx.toast("Oops!! Your task says nothing!")
@@ -156,7 +185,7 @@ class MainUI(val todoListAdapter: TodoListAdapter) : AnkoComponent<MainActivity>
                                         "",
                                         "",
                                         "",
-                                        ""
+                                        dateDue
                                     )
                                     adapter.add(newTodo)
                                     ctx.database.storeTodo(newTodo)
