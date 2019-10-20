@@ -64,7 +64,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
                                 val dpd = DatePickerDialog(
                                     activity,
                                     DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                                        c.setDate(year, month, day)
+                                        c.setDate(year, monthOfYear, dayOfMonth)
                                         todo.date_due = c.getDateString()
 
                                         ctx.database.updateTodo(todo)
