@@ -28,7 +28,7 @@ class TodoDetailActivity : AppCompatActivity(), AnkoLogger {
         }
 
         todoString = todo.toString()
-        TodoDetailUI(todo).setContentView(this)
+        TodoDetailUI(todo, this).setContentView(this)
     }
 
     override fun onBackPressed() {

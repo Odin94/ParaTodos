@@ -1,7 +1,9 @@
 package c.odin.paratodos.activity.ui
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Context
+import android.icu.util.Calendar
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -11,6 +13,8 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.widget.doOnTextChanged
 import c.odin.paratodos.activity.TodoDetailActivity
+import c.odin.paratodos.activity.extensions.getDateString
+import c.odin.paratodos.activity.extensions.setDate
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
 import com.google.android.material.appbar.AppBarLayout
@@ -18,9 +22,11 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.sdk27.coroutines.onTouch
 
 
-class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
+class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
+    AnkoComponent<TodoDetailActivity> {
     private val customStyle = { v: Any ->
         when (v) {
             is Button -> v.textSize = 26f
@@ -43,6 +49,44 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
 
             verticalLayout {
                 verticalLayout {
+                    linearLayout {
+                        // DUE DATE
+                        textView {
+                            text = todo.date_due
+                            hint = "Due date"
+
+                            onTouch { _, _ ->
+                                val c = Calendar.getInstance()
+                                val year = c.get(Calendar.YEAR)
+                                val month = c.get(Calendar.MONTH)
+                                val day = c.get(Calendar.DAY_OF_MONTH)
+
+                                val dpd = DatePickerDialog(
+                                    activity,
+                                    DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                                        c.setDate(year, month, day)
+                                        todo.date_due = c.getDateString()
+
+                                        ctx.database.updateTodo(todo)
+                                    },
+                                    year,
+                                    month,
+                                    day
+                                )
+
+                                dpd.show()
+                            }
+                        }
+                    }.lparams(width = matchParent, height = wrapContent)
+
+                    view {
+                        // DIVIDER
+                        background = ctx.getDrawable(android.R.color.darker_gray)
+                    }.lparams(width = matchParent, height = dip(1)) {
+                        topMargin = dip(15)
+                        bottomMargin = dip(15)
+                    }
+
                     editText {
                         // TITLE
                         setText(todo.title)
@@ -60,6 +104,7 @@ class TodoDetailUI(val todo: Todo) : AnkoComponent<TodoDetailActivity> {
                     }
 
                     view {
+                        // DIVIDER
                         background = ctx.getDrawable(android.R.color.darker_gray)
                     }.lparams(width = matchParent, height = dip(1)) {
                         topMargin = dip(15)
