@@ -50,12 +50,14 @@ class TodoListAdapter(
                     var checkOffTimer = Timer("checkOffTimer#$taskNum", false)
                     onCheckedChange { _, isChecked ->
                         if (isChecked) {
+                            todo.completed = true
+                            database.updateTodo(todo)
                             checkOffTimer.schedule(1000) {
                                 runOnUiThread { delete(i) }
-                                todo.completed = true
-                                database.updateTodo(todo)
                             }
                         } else {
+                            todo.completed = false
+                            database.updateTodo(todo)
                             checkOffTimer.cancel()
                             checkOffTimer = Timer("checkOffTimer#$taskNum", false)
                         }
