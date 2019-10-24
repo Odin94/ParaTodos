@@ -19,7 +19,7 @@ import kotlin.concurrent.schedule
 
 
 class TodoListAdapter(
-    private val todoList: MutableList<Todo> = ArrayList<Todo>(),
+    private var todoList: MutableList<Todo> = ArrayList<Todo>(),
     private val activity: Activity,
     private val detailRequestCode: Int
 ) : BaseAdapter() {
@@ -105,6 +105,11 @@ class TodoListAdapter(
     //function to delete an item from todoList
     fun delete(i: Int) {
         todoList.removeAt(i)
+        notifyDataSetChanged()
+    }
+
+    fun deleteWhere(filterCondition: (Todo) -> Boolean) {
+        todoList = todoList.filter(filterCondition).toMutableList()
         notifyDataSetChanged()
     }
 

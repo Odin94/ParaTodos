@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
                 if (data != null) {
                     val updatedTodo = data.getParcelableExtra<Todo>(EXTRA_TODO)
                     todoAdapter.update(updatedTodo)
+                    todoAdapter.deleteWhere { !it.completed }
 
                     database.updateTodo(updatedTodo)
                 }
