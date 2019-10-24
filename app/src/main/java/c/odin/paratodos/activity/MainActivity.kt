@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
         doAsync {
             val titles = database.getTodos()
-            titles.forEach { todoAdapter.add(it) }
+            titles.filter { !it.completed }.forEach { todoAdapter.add(it) }
             todoAdapter.notifyDataSetChanged()
         }
 

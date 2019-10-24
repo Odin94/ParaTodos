@@ -10,7 +10,12 @@ import android.widget.LinearLayout.HORIZONTAL
 import c.odin.paratodos.activity.EXTRA_TODO
 import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.model.Todo
+import c.odin.paratodos.persistence.database
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 
 class TodoListAdapter(
@@ -22,6 +27,7 @@ class TodoListAdapter(
         return with(parent!!.context) {
             //taskNum will serve as the S.No. of the todoList starting from 1
             val taskNum: Int = i + 1
+            val todo = todoList[i]
 
             //Layout for a todoList view item
             linearLayout {
@@ -31,11 +37,29 @@ class TodoListAdapter(
                 orientation = HORIZONTAL
                 isClickable = true
                 setOnClickListener {
-                    toast(todoList[i].title)
+                    toast(todo.title)
                     activity.startActivityForResult<TodoDetailActivity>(
                         detailRequestCode,
-                        EXTRA_TODO to todoList[i]
+                        EXTRA_TODO to todo
                     )
+                }
+
+                checkBox {
+                    focusable = View.NOT_FOCUSABLE
+
+                    var checkOffTimer = Timer("checkOffTimer#$taskNum", false)
+                    onCheckedChange { _, isChecked ->
+                        if (isChecked) {
+                            checkOffTimer.schedule(1000) {
+                                runOnUiThread { delete(i) }
+                                todo.completed = true
+                                database.updateTodo(todo)
+                            }
+                        } else {
+                            checkOffTimer.cancel()
+                            checkOffTimer = Timer("checkOffTimer#$taskNum", false)
+                        }
+                    }
                 }
 
                 textView {
@@ -48,7 +72,7 @@ class TodoListAdapter(
 
                 textView {
                     //                    id = R.id.taskName
-                    text = todoList[i].title
+                    text = todo.title
                     textSize = 16f
                     typeface = DEFAULT_BOLD
                     padding = dip(5)
