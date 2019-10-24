@@ -21,6 +21,7 @@ import com.google.android.material.appbar.AppBarLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
+import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.sdk27.coroutines.onTouch
 
@@ -50,6 +51,20 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
             verticalLayout {
                 verticalLayout {
                     linearLayout {
+                        // COMPLETED CHECKBOX
+                        checkBox {
+                            focusable = View.NOT_FOCUSABLE
+                            isChecked = todo.completed
+
+                            onCheckedChange { _, isChecked ->
+                                todo.completed = isChecked
+                                ctx.database.updateTodo(todo)
+                            }
+                        }.lparams {
+                            margin = dip(5)
+                            leftMargin = dip(0)
+                        }
+
                         // DUE DATE
                         textView {
                             text = todo.date_due
