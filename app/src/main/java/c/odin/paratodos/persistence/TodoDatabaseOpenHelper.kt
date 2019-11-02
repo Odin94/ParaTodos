@@ -2,6 +2,7 @@ package c.odin.paratodos.persistence
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import c.odin.paratodos.activity.extensions.int
 import c.odin.paratodos.model.Todo
 import org.jetbrains.anko.db.*
@@ -9,6 +10,8 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 const val TODO_TABLE_NAME = "Todo"
+
+private val TAG = TodoDatabaseOpenHelper::class.qualifiedName
 
 class TodoDatabaseOpenHelper private constructor(ctx: Context) :
     ManagedSQLiteOpenHelper(ctx, "Todos", null, 1) {
@@ -42,8 +45,8 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
 
     fun getTodo(id: Int) = getTodo(id.toString())
 
-    fun storeTodo(todo: Todo) {
-        use {
+    fun storeTodo(todo: Todo): Long {
+        return use {
             insert(
                 TODO_TABLE_NAME,
                 "date_created" to LocalDateTime.now(ZoneOffset.UTC).toString(),
@@ -59,7 +62,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
 
     fun updateTodo(todo: Todo) {
         use {
-            update(
+            val success = update(
                 TODO_TABLE_NAME,
                 "date_created" to todo.date_created,
                 "title" to todo.title,
@@ -71,6 +74,8 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
             )
                 .whereArgs("id = {todoId}", "todoId" to todo.id)
                 .exec()
+
+            if (success == 0) Log.e(TAG, "Failed to update TODO: $todo")
         }
     }
 

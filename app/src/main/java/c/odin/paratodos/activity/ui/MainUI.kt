@@ -182,8 +182,8 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                                         title = task.text.toString(),
                                         date_due = dateDue
                                     )
+                                    newTodo.id = ctx.database.storeTodo(newTodo)
                                     adapter.add(newTodo)
-                                    ctx.database.storeTodo(newTodo)
                                     showHideHintListView(todoList, hintListView)
                                 }
                             }

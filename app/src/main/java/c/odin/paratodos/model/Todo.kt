@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Todo(
-    val id: Int = -1,
+    var id: Long = -1,
     val date_created: String = "",
     var title: String = "",
     var description: String = "",
