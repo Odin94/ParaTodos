@@ -45,7 +45,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
 
     fun getTodo(id: Int) = getTodo(id.toString())
 
-    fun storeTodo(todo: Todo): Long {
+    fun store(todo: Todo): Long {
         return use {
             insert(
                 TODO_TABLE_NAME,
@@ -60,9 +60,9 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
         }
     }
 
-    fun updateTodo(todo: Todo) {
+    fun update(todo: Todo) {
         use {
-            val success = update(
+            val updatedRows = update(
                 TODO_TABLE_NAME,
                 "date_created" to todo.date_created,
                 "title" to todo.title,
@@ -75,7 +75,19 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
                 .whereArgs("id = {todoId}", "todoId" to todo.id)
                 .exec()
 
-            if (success == 0) Log.e(TAG, "Failed to update TODO: $todo")
+            if (updatedRows == 0) Log.e(TAG, "Failed to update TODO: $todo")
+        }
+    }
+
+    fun delete(todo: Todo) {
+        use {
+            val deletedRows = delete(
+                TODO_TABLE_NAME,
+                "id = {todoId}",
+                "todoId" to todo.id
+            )
+
+            if (deletedRows == 0) Log.e(TAG, "Failed to deleteByIndex TODO: $todo")
         }
     }
 

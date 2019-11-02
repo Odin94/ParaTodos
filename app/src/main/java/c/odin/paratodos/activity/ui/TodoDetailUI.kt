@@ -16,7 +16,6 @@ import c.odin.paratodos.activity.TodoDetailActivity
 import c.odin.paratodos.activity.extensions.getDateString
 import c.odin.paratodos.activity.extensions.setDate
 import c.odin.paratodos.model.Todo
-import c.odin.paratodos.persistence.database
 import com.google.android.material.appbar.AppBarLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
@@ -58,7 +57,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
 
                             onCheckedChange { _, isChecked ->
                                 todo.completed = isChecked
-                                ctx.database.updateTodo(todo)
+                                activity.updateTodo(todo)
                             }
                         }.lparams {
                             margin = dip(5)
@@ -82,7 +81,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
                                         c.setDate(year, monthOfYear, dayOfMonth)
                                         todo.date_due = c.getDateString()
 
-                                        ctx.database.updateTodo(todo)
+                                        activity.updateTodo(todo)
                                     },
                                     year,
                                     month,
@@ -112,7 +111,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
 
                         doOnTextChanged { text, _, _, _ ->
                             todo.title = text.toString()
-                            ctx.database.updateTodo(todo)
+                            activity.updateTodo(todo)
                         }
                     }.lparams {
                         gravity = Gravity.START
@@ -136,7 +135,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
 
                         doOnTextChanged { text, _, _, _ ->
                             todo.description = text.toString()
-                            ctx.database.updateTodo(todo)
+                            activity.updateTodo(todo)
                         }
                     }.lparams(width = matchParent, height = wrapContent) {
                         gravity = Gravity.START
@@ -166,11 +165,11 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
                 }
             }
 
-            add("Action 2").apply {
-                tooltipText = "Start Action 2"
+            add("Delete").apply {
+                tooltipText = "Delete selected Todo"
 
                 setOnMenuItemClickListener {
-                    // startActivity<Activity2>()
+                    activity.deleteTodo(todo)
                     true
                 }
             }

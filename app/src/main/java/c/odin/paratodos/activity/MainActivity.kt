@@ -2,6 +2,7 @@ package c.odin.paratodos.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import c.odin.paratodos.activity.ui.MainUI
 import c.odin.paratodos.adapter.TodoListAdapter
@@ -13,6 +14,8 @@ import org.jetbrains.anko.setContentView
 
 
 private const val BUNDLE_TODO_LIST = "TodoList"
+private val TAG = MainActivity::class.qualifiedName
+
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
 
@@ -45,14 +48,29 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         when (requestCode) {
             DETAIL_CODE -> {
                 if (data != null) {
-                    val updatedTodo = data.getParcelableExtra<Todo>(EXTRA_TODO)
-                    todoAdapter.update(updatedTodo)
-                    todoAdapter.filterTodos { !it.completed }
+                    val affectedTodo = data.getParcelableExtra<Todo>(EXTRA_TODO)
+                    val changeType = data.getSerializableExtra(EXTRA_CHANGE_TYPE) as CHANGE_TYPE
 
-                    database.updateTodo(updatedTodo)
+                    when (changeType) {
+                        CHANGE_TYPE.UPDATE -> updateTodoListState(affectedTodo)
+                        CHANGE_TYPE.DELETE -> {
+                            todoAdapter.deleteById(affectedTodo.id)
+                            addRestoreButton(affectedTodo)
+                        }
+                        else -> Log.v(TAG, "No change")
+                    }
                 }
             }
         }
+    }
+
+    private fun updateTodoListState(updatedTodo: Todo) {
+        todoAdapter.update(updatedTodo)
+        todoAdapter.filterTodos { !it.completed }
+    }
+
+    private fun addRestoreButton(deletedTodo: Todo) {
+        throw NotImplementedError("TODO")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

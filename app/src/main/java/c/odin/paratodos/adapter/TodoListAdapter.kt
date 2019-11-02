@@ -51,13 +51,13 @@ class TodoListAdapter(
                     onCheckedChange { _, isChecked ->
                         if (isChecked) {
                             todo.completed = true
-                            database.updateTodo(todo)
+                            database.update(todo)
                             checkOffTimer.schedule(1000) {
-                                runOnUiThread { delete(i) }
+                                runOnUiThread { deleteByIndex(i) }
                             }
                         } else {
                             todo.completed = false
-                            database.updateTodo(todo)
+                            database.update(todo)
                             checkOffTimer.cancel()
                             checkOffTimer = Timer("checkOffTimer#$taskNum", false)
                         }
@@ -96,16 +96,23 @@ class TodoListAdapter(
         return 0L
     }
 
-    //function to add an item to the todoList
     fun add(todo: Todo) {
         todoList.add(todoList.size, todo)
         notifyDataSetChanged()
     }
 
-    //function to delete an item from todoList
-    fun delete(i: Int) {
+    // deleteByIndex by id here (or make separate function) TODO
+    fun deleteByIndex(i: Int) {
         todoList.removeAt(i)
         notifyDataSetChanged()
+    }
+
+    fun deleteByIndex(i: Long) {
+        deleteByIndex(i.toInt())
+    }
+
+    fun deleteById(i: Long) {
+        filterTodos { it.id != i }
     }
 
     fun filterTodos(filterCondition: (Todo) -> Boolean) {
