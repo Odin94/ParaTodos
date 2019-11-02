@@ -117,4 +117,6 @@ class TodoListAdapter(
         todoList.replaceAll { if (it.id == todo.id) todo else it }
         notifyDataSetChanged()
     }
+
+    fun getTodoListCopy() = todoList.toMutableList()
 }

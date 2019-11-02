@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
         savedInstanceState?.let {
             val arrayList = savedInstanceState.get(BUNDLE_TODO_LIST)
-            todoList.addAll(arrayList as List<Todo>)
+            todoList.addAll((arrayList as List<Todo>).filter { !it.completed })
         }
 
         doAsync {
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(BUNDLE_TODO_LIST, ArrayList(todoList))
+        outState.putParcelableArrayList(BUNDLE_TODO_LIST, ArrayList(todoAdapter.getTodoListCopy()))
         super.onSaveInstanceState(outState)
     }
 }
