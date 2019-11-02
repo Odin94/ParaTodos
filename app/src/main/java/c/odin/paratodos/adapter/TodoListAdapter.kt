@@ -108,7 +108,7 @@ class TodoListAdapter(
         notifyDataSetChanged()
     }
 
-    fun deleteWhere(filterCondition: (Todo) -> Boolean) {
+    fun filterTodos(filterCondition: (Todo) -> Boolean) {
         todoList = todoList.filter(filterCondition).toMutableList()
         notifyDataSetChanged()
     }
