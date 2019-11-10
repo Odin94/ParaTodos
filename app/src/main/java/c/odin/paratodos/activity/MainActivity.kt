@@ -11,6 +11,7 @@ import c.odin.paratodos.persistence.database
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.toast
 
 
 private const val BUNDLE_TODO_LIST = "TodoList"
@@ -18,15 +19,15 @@ private val TAG = MainActivity::class.qualifiedName
 
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
-
-    private var todoList: MutableList<Todo> = ArrayList<Todo>()
     private lateinit var todoAdapter: TodoListAdapter
 
     private val DETAIL_CODE = 42
+    private lateinit var ui: MainUI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val todoList: MutableList<Todo> = ArrayList<Todo>()
         savedInstanceState?.let {
             val arrayList = savedInstanceState.get(BUNDLE_TODO_LIST)
             todoList.addAll((arrayList as List<Todo>).filter { !it.completed })
@@ -40,7 +41,8 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
         todoAdapter = TodoListAdapter(todoList, this, DETAIL_CODE)
 
-        MainUI(todoAdapter, this).setContentView(this)
+        ui = MainUI(todoAdapter, this)
+        ui.setContentView(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -54,8 +56,9 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
                     when (changeType) {
                         CHANGE_TYPE.UPDATE -> updateTodoListState(affectedTodo)
                         CHANGE_TYPE.DELETE -> {
+                            toast("Deleted '${affectedTodo.title}'")
                             todoAdapter.deleteById(affectedTodo.id)
-                            addRestoreButton(affectedTodo)
+                            showRestoreButton(affectedTodo)
                         }
                         else -> Log.v(TAG, "No change")
                     }
@@ -69,8 +72,8 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         todoAdapter.filterTodos { !it.completed }
     }
 
-    private fun addRestoreButton(deletedTodo: Todo) {
-        throw NotImplementedError("TODO")
+    private fun showRestoreButton(deletedTodo: Todo) {
+        ui.activateRestoreButton(deletedTodo)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
