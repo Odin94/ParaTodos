@@ -1,6 +1,9 @@
 package c.odin.paratodos.adapter
 
+import android.R
 import android.app.Activity
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.Typeface.DEFAULT_BOLD
 import android.view.View
@@ -18,8 +21,8 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 
-class TodoListAdapter(
-    private var todoList: MutableList<Todo> = ArrayList(),
+class CompletedTodosAdapter(
+    private var completedTodos: MutableList<Todo> = ArrayList(),
     private val activity: Activity,
     private val detailRequestCode: Int
 ) : BaseAdapter() {
@@ -27,7 +30,7 @@ class TodoListAdapter(
         return with(parent!!.context) {
             //taskNum will serve as the S.No. of the todoList starting from 1
             val taskNum: Int = i + 1
-            val todo = todoList[i]
+            val todo = completedTodos[i]
 
             //Layout for a todoList view item
             linearLayout {
@@ -45,36 +48,41 @@ class TodoListAdapter(
 
                 checkBox {
                     focusable = View.NOT_FOCUSABLE
+                    isChecked = true
+                    buttonTintList = ColorStateList(
+                        arrayOf(intArrayOf(R.attr.state_checked), intArrayOf(-R.attr.state_checked)),
+                        intArrayOf(Color.LTGRAY, Color.LTGRAY)
+                    )
 
                     var checkOffTimer = Timer("checkOffTimer#$taskNum", false)
                     onCheckedChange { _, isChecked ->
                         if (isChecked) {
                             todo.completed = true
                             database.update(todo)
-                            checkOffTimer.schedule(1000) {
-                                runOnUiThread { deleteByIndex(i) }
-                            }
+                            checkOffTimer.cancel()
+                            checkOffTimer = Timer("checkOffTimer#$taskNum", false)
                         } else {
                             todo.completed = false
                             database.update(todo)
-                            checkOffTimer.cancel()
-                            checkOffTimer = Timer("checkOffTimer#$taskNum", false)
+                            checkOffTimer.schedule(1000) {
+                                runOnUiThread { deleteByIndex(i) }
+                            }
                         }
                     }
                 }
 
                 textView {
-                    //                    id = R.id.taskNum
                     text = taskNum.toString()
+                    textColor = Color.LTGRAY
                     textSize = 16f
                     typeface = Typeface.MONOSPACE
                     padding = dip(5)
                 }
 
                 textView {
-                    //                    id = R.id.taskName
                     text = todo.title
                     textSize = 16f
+                    textColor = Color.LTGRAY
                     typeface = DEFAULT_BOLD
                     padding = dip(5)
                 }
@@ -83,11 +91,11 @@ class TodoListAdapter(
     }
 
     override fun getItem(position: Int): Todo {
-        return todoList[position]
+        return completedTodos[position]
     }
 
     override fun getCount(): Int {
-        return todoList.size
+        return completedTodos.size
     }
 
     override fun getItemId(position: Int): Long {
@@ -96,13 +104,13 @@ class TodoListAdapter(
     }
 
     fun add(todo: Todo) {
-        todoList.add(todoList.size, todo)
+        completedTodos.add(completedTodos.size, todo)
         notifyDataSetChanged()
     }
 
     // deleteByIndex by id here (or make separate function) TODO
     fun deleteByIndex(i: Int) {
-        todoList.removeAt(i)
+        completedTodos.removeAt(i)
         notifyDataSetChanged()
     }
 
@@ -115,14 +123,14 @@ class TodoListAdapter(
     }
 
     fun filterTodos(filterCondition: (Todo) -> Boolean) {
-        todoList = todoList.filter(filterCondition).toMutableList()
+        completedTodos = completedTodos.filter(filterCondition).toMutableList()
         notifyDataSetChanged()
     }
 
     fun update(todo: Todo) {
-        todoList.replaceAll { if (it.id == todo.id) todo else it }
+        completedTodos.replaceAll { if (it.id == todo.id) todo else it }
         notifyDataSetChanged()
     }
 
-    fun getTodoListCopy() = todoList.toMutableList()
+    fun getTodoListCopy() = completedTodos.toMutableList()
 }

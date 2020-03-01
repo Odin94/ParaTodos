@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import c.odin.paratodos.activity.ui.MainUI
+import c.odin.paratodos.adapter.CompletedTodosAdapter
 import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
@@ -19,6 +20,7 @@ private val TAG = MainActivity::class.qualifiedName
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
     private lateinit var todoAdapter: TodoListAdapter
+    private lateinit var completedTodoAdapter: CompletedTodosAdapter
 
     private val DETAIL_CODE = 42
     private lateinit var ui: MainUI
@@ -31,8 +33,9 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         val completedTodos = todos.filter { it.completed }.toMutableList()
 
         todoAdapter = TodoListAdapter(openTodos, this, DETAIL_CODE)
+        completedTodoAdapter = CompletedTodosAdapter(completedTodos, this, DETAIL_CODE)
 
-        ui = MainUI(todoAdapter, this)
+        ui = MainUI(todoAdapter, completedTodoAdapter, this)
         ui.setContentView(this)
     }
 

@@ -15,6 +15,7 @@ import c.odin.paratodos.activity.MainActivity
 import c.odin.paratodos.activity.extensions.getDateString
 import c.odin.paratodos.activity.extensions.openDatePicker
 import c.odin.paratodos.activity.extensions.setDate
+import c.odin.paratodos.adapter.CompletedTodosAdapter
 import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
@@ -27,7 +28,11 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
-class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
+class MainUI(
+    val todoListAdapter: TodoListAdapter,
+    val completedTodosAdapter: CompletedTodosAdapter,
+    val activity: MainActivity
+) :
     AnkoComponent<MainActivity> {
     private val customStyle = { v: Any ->
         when (v) {
@@ -56,25 +61,29 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                 }
 
                 var todoList: ListView? = null
-
-                val hintListView = textView("What's your Todo List for today?") {
-                    textSize = 20f
-                }.lparams {
-                    gravity = Gravity.CENTER
-                }
-
-
+                var completedTodos: ListView? = null
+                var completedText: TextView? = null
                 verticalLayout {
                     todoList = listView {
-                        //assign adapter
                         adapter = todoListAdapter
                     }
+                    verticalLayout {
+                        completedText = textView("Completed")
+                        completedTodos = listView {
+                            adapter = completedTodosAdapter
+                        }
+                    }.lparams { topMargin = dip(20) }
                 }.lparams {
                     margin = dip(5)
                     behavior = AppBarLayout.ScrollingViewBehavior()
                 }
 
-                addFloatingPlusButton(this, ctx, todoList, hintListView)
+                val hintText = textView("What's your Todo List for today?") {
+                    textSize = 20f
+                }.lparams {
+                    gravity = Gravity.CENTER
+                }
+                addFloatingPlusButton(this, ctx, todoList, hintText)
                     .lparams {
                         horizontalMargin = dip(25)
                         verticalMargin = dip(25)
@@ -88,7 +97,8 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                         gravity = Gravity.BOTTOM or Gravity.START
                     }
 
-                showHideHintListView(todoList, hintListView)
+                toggleViewVisibility(hintText, isEmpty(todoList))
+                toggleViewVisibility(completedText, !isEmpty(completedTodos))
             }.applyRecursively(customStyle)
         }
 
@@ -167,7 +177,7 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
         layout: CoordinatorLayout,
         ctx: Context,
         todoList: ListView?,
-        hintListView: TextView
+        hintText: TextView
     ): FloatingActionButton {
         return layout.floatingActionButton {
             imageResource = android.R.drawable.ic_input_add
@@ -227,7 +237,10 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                                     )
                                     newTodo.id = ctx.database.store(newTodo)
                                     todoListAdapter.add(newTodo)
-                                    showHideHintListView(todoList, hintListView)
+                                    toggleViewVisibility(
+                                        hintText,
+                                        !isEmpty(todoList)
+                                    )
                                 }
                             }
                         }
@@ -237,13 +250,13 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
         }
     }
 
-    private fun showHideHintListView(listView: ListView?, hintListView: TextView) {
-        if (listView == null || getTotalListItems(listView) > 0) {
-            hintListView.visibility = View.GONE
+    private fun toggleViewVisibility(view: View?, on: Boolean) {
+        if (on) {
+            view?.visibility = View.VISIBLE
         } else {
-            hintListView.visibility = View.VISIBLE
+            view?.visibility = View.GONE
         }
     }
 
-    private fun getTotalListItems(list: ListView?) = list?.adapter?.count ?: 0
+    private fun isEmpty(list: ListView?) = list?.adapter?.count ?: 0 == 0
 }
