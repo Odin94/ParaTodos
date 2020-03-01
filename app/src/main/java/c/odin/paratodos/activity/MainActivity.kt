@@ -9,7 +9,6 @@ import c.odin.paratodos.adapter.TodoListAdapter
 import c.odin.paratodos.model.Todo
 import c.odin.paratodos.persistence.database
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.toast
 
@@ -27,19 +26,11 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val todoList: MutableList<Todo> = ArrayList<Todo>()
-        savedInstanceState?.let {
-            val arrayList = savedInstanceState.get(BUNDLE_TODO_LIST)
-            todoList.addAll((arrayList as List<Todo>).filter { !it.completed })
-        }
+        val todos = database.getTodos()
+        val openTodos = todos.filter { !it.completed }.toMutableList()
+        val completedTodos = todos.filter { it.completed }.toMutableList()
 
-        doAsync {
-            val titles = database.getTodos()
-            titles.filter { !it.completed }.forEach { todoAdapter.add(it) }
-            todoAdapter.notifyDataSetChanged()
-        }
-
-        todoAdapter = TodoListAdapter(todoList, this, DETAIL_CODE)
+        todoAdapter = TodoListAdapter(openTodos, this, DETAIL_CODE)
 
         ui = MainUI(todoAdapter, this)
         ui.setContentView(this)
@@ -77,7 +68,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(BUNDLE_TODO_LIST, ArrayList(todoAdapter.getTodoListCopy()))
         super.onSaveInstanceState(outState)
     }
 }
