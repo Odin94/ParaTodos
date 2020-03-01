@@ -21,7 +21,8 @@ import kotlin.concurrent.schedule
 class TodoListAdapter(
     private var todoList: MutableList<Todo> = ArrayList(),
     private val activity: Activity,
-    private val detailRequestCode: Int
+    private val detailRequestCode: Int,
+    var completedTodosAdapter: CompletedTodosAdapter? = null
 ) : BaseAdapter() {
     override fun getView(i: Int, v: View?, parent: ViewGroup?): View {
         return with(parent!!.context) {
@@ -52,7 +53,10 @@ class TodoListAdapter(
                             todo.completed = true
                             database.update(todo)
                             checkOffTimer.schedule(1000) {
-                                runOnUiThread { deleteByIndex(i) }
+                                runOnUiThread {
+                                    completedTodosAdapter?.add(todo)
+                                    deleteByIndex(i)
+                                }
                             }
                         } else {
                             todo.completed = false

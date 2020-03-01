@@ -24,7 +24,8 @@ import kotlin.concurrent.schedule
 class CompletedTodosAdapter(
     private var completedTodos: MutableList<Todo> = ArrayList(),
     private val activity: Activity,
-    private val detailRequestCode: Int
+    private val detailRequestCode: Int,
+    var todoListAdapter: TodoListAdapter? = null
 ) : BaseAdapter() {
     override fun getView(i: Int, v: View?, parent: ViewGroup?): View {
         return with(parent!!.context) {
@@ -50,7 +51,10 @@ class CompletedTodosAdapter(
                     focusable = View.NOT_FOCUSABLE
                     isChecked = true
                     buttonTintList = ColorStateList(
-                        arrayOf(intArrayOf(R.attr.state_checked), intArrayOf(-R.attr.state_checked)),
+                        arrayOf(
+                            intArrayOf(R.attr.state_checked),
+                            intArrayOf(-R.attr.state_checked)
+                        ),
                         intArrayOf(Color.LTGRAY, Color.LTGRAY)
                     )
 
@@ -65,7 +69,10 @@ class CompletedTodosAdapter(
                             todo.completed = false
                             database.update(todo)
                             checkOffTimer.schedule(1000) {
-                                runOnUiThread { deleteByIndex(i) }
+                                runOnUiThread {
+                                    deleteByIndex(i)
+                                    todoListAdapter?.add(todo)
+                                }
                             }
                         }
                     }

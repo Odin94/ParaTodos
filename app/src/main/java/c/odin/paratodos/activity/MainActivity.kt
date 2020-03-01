@@ -19,7 +19,7 @@ private val TAG = MainActivity::class.qualifiedName
 
 
 class MainActivity : AppCompatActivity(), AnkoLogger {
-    private lateinit var todoAdapter: TodoListAdapter
+    private lateinit var todoListAdapter: TodoListAdapter
     private lateinit var completedTodoAdapter: CompletedTodosAdapter
 
     private val DETAIL_CODE = 42
@@ -32,10 +32,13 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         val openTodos = todos.filter { !it.completed }.toMutableList()
         val completedTodos = todos.filter { it.completed }.toMutableList()
 
-        todoAdapter = TodoListAdapter(openTodos, this, DETAIL_CODE)
+        todoListAdapter = TodoListAdapter(openTodos, this, DETAIL_CODE)
         completedTodoAdapter = CompletedTodosAdapter(completedTodos, this, DETAIL_CODE)
 
-        ui = MainUI(todoAdapter, completedTodoAdapter, this)
+        todoListAdapter.completedTodosAdapter = completedTodoAdapter
+        completedTodoAdapter.todoListAdapter = todoListAdapter
+
+        ui = MainUI(todoListAdapter, completedTodoAdapter, this)
         ui.setContentView(this)
     }
 
@@ -51,7 +54,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
                         CHANGE_TYPE.UPDATE -> updateTodoListState(affectedTodo)
                         CHANGE_TYPE.DELETE -> {
                             toast("Deleted '${affectedTodo.title}'")
-                            todoAdapter.deleteById(affectedTodo.id)
+                            todoListAdapter.deleteById(affectedTodo.id)
                             showRestoreButton(affectedTodo)
                         }
                         else -> Log.v(TAG, "No change")
@@ -62,8 +65,8 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     }
 
     private fun updateTodoListState(updatedTodo: Todo) {
-        todoAdapter.update(updatedTodo)
-        todoAdapter.filterTodos { !it.completed }
+        todoListAdapter.update(updatedTodo)
+        todoListAdapter.filterTodos { !it.completed }
     }
 
     private fun showRestoreButton(deletedTodo: Todo) {
