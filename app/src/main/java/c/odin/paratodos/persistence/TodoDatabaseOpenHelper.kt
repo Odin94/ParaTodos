@@ -31,7 +31,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
         return use {
             select(TODO_TABLE_NAME)
                 .orderBy("id")
-                .parseList(classParser<Todo>())
+                .parseList(classParser())
         }
     }
 
@@ -39,7 +39,7 @@ class TodoDatabaseOpenHelper private constructor(ctx: Context) :
         return use {
             select(TODO_TABLE_NAME)
                 .whereSimple("id = ?", id)
-                .parseSingle(classParser<Todo>())
+                .parseSingle(classParser())
         }
     }
 
