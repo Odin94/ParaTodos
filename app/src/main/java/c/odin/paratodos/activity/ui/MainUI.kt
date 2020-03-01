@@ -51,9 +51,7 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
                         lparams(width = matchParent, height = wrapContent)
 
                         addHamburgerButton(this, ctx)
-                        populateMenu(menu)
-
-                        menu
+                        menu.populate()
                     }
                 }
 
@@ -131,27 +129,27 @@ class MainUI(val todoListAdapter: TodoListAdapter, val activity: MainActivity) :
         }
     }
 
-    private fun populateMenu(menu: Menu) {
-        menu.apply {
-            add("Action1").apply {
-                tooltipText = "Start Action 1"
+    private fun Menu.populate(): Menu {
+        add("Action1").apply {
+            tooltipText = "Start Action 1"
 
 
-                setOnMenuItemClickListener {
-                    //                                startActivity<Activity1>()
-                    true
-                }
-            }
-
-            add("Action 2").apply {
-                tooltipText = "Start Action 2"
-
-                setOnMenuItemClickListener {
-                    // startActivity<Activity2>()
-                    true
-                }
+            setOnMenuItemClickListener {
+                //                                startActivity<Activity1>()
+                true
             }
         }
+
+        add("Action 2").apply {
+            tooltipText = "Start Action 2"
+
+            setOnMenuItemClickListener {
+                // startActivity<Activity2>()
+                true
+            }
+        }
+
+        return this
     }
 
     private fun addHamburgerButton(vm: ViewManager, ctx: Context): ImageButton {

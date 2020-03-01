@@ -41,9 +41,7 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
             appBarLayout {
                 toolbar {
                     addHamburgerButton(this, ctx)
-                    populateMenu(menu)
-
-                    menu
+                    menu.populate()
                 }.lparams(width = matchParent, height = wrapContent)
             }.lparams(width = matchParent, height = wrapContent)
 
@@ -153,27 +151,27 @@ class TodoDetailUI(val todo: Todo, val activity: TodoDetailActivity) :
         }.applyRecursively(customStyle)
     }
 
-    private fun populateMenu(menu: Menu) {
-        menu.apply {
-            add("Action1").apply {
-                tooltipText = "Start Action 1"
+    private fun Menu.populate(): Menu {
+        add("Action1").apply {
+            tooltipText = "Start Action 1"
 
 
-                setOnMenuItemClickListener {
-                    //                                startActivity<Activity1>()
-                    true
-                }
-            }
-
-            add("Delete").apply {
-                tooltipText = "Delete selected Todo"
-
-                setOnMenuItemClickListener {
-                    activity.deleteTodo(todo)
-                    true
-                }
+            setOnMenuItemClickListener {
+                //                                startActivity<Activity1>()
+                true
             }
         }
+
+        add("Delete").apply {
+            tooltipText = "Delete selected Todo"
+
+            setOnMenuItemClickListener {
+                activity.deleteTodo(todo)
+                true
+            }
+        }
+
+        return this
     }
 
     private fun addHamburgerButton(vm: ViewManager, ctx: Context): ImageButton {
